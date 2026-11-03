@@ -557,35 +557,25 @@
 
             const loadingId = appendChatMessage('system', 'Thinking... answered in a heartbeat...');
 
-            try {
-                const systemPrompt = "You are Alec Wilson's Ultimate AI Study Helper for junior high and high school students. Provide helpful, encouraging, concise, and easy-to-understand study, homework, or stress management answers. Keep responses well-structured and encouraging.";
-                const apiKey = "";
-                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+           // Smart offline response logic for Felix
+                const text = question.toLowerCase();
+                let replyText = "";
 
-                const payload = {
-                    contents: [{ parts: [{ text: question }] }],
-                    systemInstruction: { parts: [{ text: systemPrompt }] }
-                };
-
-                const response = await fetch(apiUrl, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify(payload)
-                });
-
-                const data = await response.json();
-                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't fetch an answer right now. Please try again!";
+                if (text.includes("math") || text.includes("algebra") || text.includes("equation")) {
+                  replyText = "Math tip: Break complex problems into single operations! Need help with formulas? Check out the Formula Vault module below.";
+                } else if (text.includes("science") || text.includes("bio") || text.includes("chem")) {
+                  replyText = "Science tip: Focus on understanding core concepts rather than memorizing terms. Diagrams and flashcards work wonders!";
+                } else if (text.includes("english") || text.includes("essay") || text.includes("read")) {
+                  replyText = "Writing tip: Outline your main thesis and 3 supporting points before writing your main draft.";
+                } else if (text.includes("hello") || text.includes("hi") || text.includes("hey")) {
+                  replyText = "Hey there! I'm Felix, your study assistant. Ask me for study tips or subject advice anytime!";
+                } else {
+                  replyText = "Great question! Keep pacing yourself, break down your tasks into small chunks, and use the Pomodoro timer to stay sharp!";
+                }
 
                 removeChatMessage(loadingId);
                 appendChatMessage('assistant', replyText);
-
-                // Reward student with Dubbinces for asking!
                 addDubbinces(10);
-            } catch (err) {
-                removeChatMessage(loadingId);
-                appendChatMessage('assistant', "Network issue or API limit reached. Please try asking again in a moment!");
-            }
-        }
 
         function useQuickPrompt(promptText) {
             document.getElementById('qaInput').value = promptText;
