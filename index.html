@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Alec Wilson's Ultimate Study Helper</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0fdf4',
+                            100: '#dcfce7',
+                            500: '#10b981',
+                            600: '#059669',
+                            700: '#047857',
+                            800: '#065f46',
+                            900: '#064e3b',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Inter Font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="h-full bg-slate-900 text-slate-100 transition-colors duration-200">
+    <div id="app" class="min-h-screen flex flex-col max-w-md mx-auto sm:max-w-xl md:max-w-2xl bg-slate-950 shadow-2xl relative pb-24 border-x border-slate-800">
+        
+        <!-- Header -->
+        <header class="sticky top-0 z-30 bg-slate-950/90 backdrop-blur-md border-b border-slate-800 px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2.5">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center text-white shadow-lg shadow-emerald-500/20">
+                    <i class="fa-solid fa-graduation-cap text-xl"></i>
+                </div>
+                <div>
+                    <h1 class="font-bold text-base leading-tight text-white flex items-center gap-1.5">
+                        Study Hub
+                        <span class="text-[10px] bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 px-1.5 py-0.5 rounded-full font-semibold">by Alec Wilson</span>
+                    </h1>
+                    <p class="text-xs text-slate-400">Logistical Student Assistant</p>
+                </div>
+            </div>
+
+            <!-- Dubbinces Coin Counter & Theme Toggle -->
+            <div class="flex items-center gap-2">
+                <div class="flex items-center gap-1.5 bg-amber-500/10 border border-amber-500/30 px-3 py-1 rounded-full shadow-sm">
+                    <i class="fa-solid fa-coins text-amber-400 text-sm animate-bounce"></i>
+                    <span id="dubbincesDisplay" class="font-black text-xs text-amber-300">0</span>
+                    <span class="text-[10px] font-bold text-amber-500/90 hidden sm:inline">Dubbinces</span>
+                </div>
+                <button id="themeToggleBtn" aria-label="Toggle Theme" class="w-9 h-9 rounded-xl bg-slate-800 text-slate-300 flex items-center justify-center hover:bg-slate-700 transition-colors">
+                    <i id="themeIcon" class="fa-solid fa-sun text-amber-400"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Main Scrollable Content -->
+        <main class="flex-1 px-4 py-4 space-y-5">
+
+            <!-- Relatable Welcome Banner & Quote -->
+            <section class="bg-gradient-to-br from-emerald-900/40 via-slate-900 to-teal-900/30 border border-emerald-500/30 rounded-3xl p-5 relative overflow-hidden shadow-xl">
+                <div class="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-emerald-500/10 rounded-full blur-2xl pointer-events-none"></div>
+                <div class="flex items-start gap-3">
+                    <div class="w-8 h-8 rounded-full bg-emerald-500/20 text-emerald-400 flex items-center justify-center shrink-0 mt-0.5">
+                        <i class="fa-solid fa-quote-left text-sm"></i>
+                    </div>
+                    <div class="space-y-2">
+                        <h2 class="text-base font-extrabold text-emerald-400 leading-snug">
+                            "Welcome to Junior high and highschool folks, where things are about to get real."
+                        </h2>
+                        <p class="text-xs text-slate-300 leading-relaxed font-normal">
+                            Between endless homework, heavy exam pressure, and constant stress, keeping up can feel overwhelming. I built this tool to take the weight off your shoulders — helping you organize your studies, conquer stress, get instant answers, and earn **Dubbinces** as you learn!
+                        </p>
+                        <div class="pt-1 flex items-center justify-between text-[11px] text-slate-400 border-t border-slate-800/80">
+                            <span class="font-semibold text-emerald-300">Creator: Alec Wilson</span>
+                            <span class="italic text-amber-400 font-medium">Earn Dubbinces by studying!</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Navigation Tabs (Q&A, Planner, Timer, Notes, Shop/Tools) -->
+            <nav class="grid grid-cols-5 gap-1 p-1.5 bg-slate-900 border border-slate-800 rounded-2xl">
+                <button id="nav-qa" onclick="switchTab('qa')" class="py-2 px-1 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-bolt"></i>
+                    <span class="text-[9px]">Q&A</span>
+                </button>
+                <button id="nav-planner" onclick="switchTab('planner')" class="py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-list-check"></i>
+                    <span class="text-[9px]">Planner</span>
+                </button>
+                <button id="nav-timer" onclick="switchTab('timer')" class="py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-stopwatch"></i>
+                    <span class="text-[9px]">Timer</span>
+                </button>
+                <button id="nav-tools" onclick="switchTab('tools')" class="py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1">
+                    <i class="fa-solid fa-toolbox"></i>
+                    <span class="text-[9px]">Tools</span>
+                </button>
+                <button id="nav-shop" onclick="switchTab('shop')" class="py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1 relative">
+                    <i class="fa-solid fa-store text-amber-400"></i>
+                    <span class="text-[9px]">Shop</span>
+                </button>
+            </nav>
+
+            <!-- TAB 1: INSTANT AI Q&A -->
+            <section id="tab-content-qa" class="space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <div class="flex items-center gap-2">
+                            <span class="w-2.5 h-2.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            <h3 class="font-bold text-sm text-white">Ask Anything — Instant Answer</h3>
+                        </div>
+                        <span class="text-[10px] text-amber-400 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded-md font-bold">+10 Dubbinces / Ask</span>
+                    </div>
+
+                    <!-- Quick Prompt Chips -->
+                    <div class="flex gap-2 overflow-x-auto no-scrollbar py-1">
+                        <button onclick="useQuickPrompt('Explain photosynthesis in simple terms for high school bio.')" class="shrink-0 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 px-3 py-1.5 rounded-xl transition-colors">
+                            🌿 Bio: Photosynthesis
+                        </button>
+                        <button onclick="useQuickPrompt('How do I manage high school stress and avoid burnout?')" class="shrink-0 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 px-3 py-1.5 rounded-xl transition-colors">
+                            🧠 Stress Management
+                        </button>
+                        <button onclick="useQuickPrompt('What is the quadratic formula and how do I use it?')" class="shrink-0 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 px-3 py-1.5 rounded-xl transition-colors">
+                            📐 Math: Quadratic Formula
+                        </button>
+                        <button onclick="useQuickPrompt('How do I write a solid essay introduction?')" class="shrink-0 text-xs bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700/60 px-3 py-1.5 rounded-xl transition-colors">
+                            ✍️ Essay Writing
+                        </button>
+                    </div>
+
+                    <!-- Chat Container -->
+                    <div id="chatMessages" class="min-h-[220px] max-h-[320px] overflow-y-auto space-y-3 pr-1 text-sm bg-slate-950/60 rounded-2xl p-3 border border-slate-800/80">
+                        <div class="bg-slate-800/80 text-slate-200 p-3 rounded-2xl rounded-tl-none max-w-[88%] text-xs leading-relaxed space-y-1 border border-slate-700/50">
+                            <p class="font-bold text-emerald-400">Alec's AI Study Assistant:</p>
+                            <p>Hey there! Ask me any homework, subject question, or study strategy. You'll earn <strong>10 Dubbinces</strong> for every question asked!</p>
+                        </div>
+                    </div>
+
+                    <!-- Chat Input -->
+                    <form id="qaForm" onsubmit="handleQuestionSubmit(event)" class="relative flex items-center gap-2">
+                        <input type="text" id="qaInput" placeholder="Ask a study question to earn Dubbinces..." required class="w-full bg-slate-950 border border-slate-700 text-white text-xs rounded-2xl px-4 py-3.5 pr-12 focus:outline-none focus:ring-2 focus:ring-emerald-500 placeholder-slate-500">
+                        <button type="submit" id="qaSubmitBtn" class="absolute right-2 bg-emerald-600 hover:bg-emerald-500 text-white w-8 h-8 rounded-xl flex items-center justify-center transition-transform active:scale-90">
+                            <i class="fa-solid fa-paper-plane text-xs"></i>
+                        </button>
+                    </form>
+                </div>
+
+                <!-- Daily Quests Widget -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3">
+                    <h3 class="font-bold text-xs text-amber-400 flex items-center gap-1.5">
+                        <i class="fa-solid fa-trophy"></i> Daily Goals & Rewards
+                    </h3>
+                    <div id="questList" class="space-y-2">
+                        <!-- Rendered by JS -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 2: LOGISTICAL PLANNER & TASKS -->
+            <section id="tab-content-planner" class="hidden space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-4">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i class="fa-solid fa-calendar-check text-emerald-400"></i> Task & Homework Planner
+                        </h3>
+                        <span id="plannerCounter" class="text-xs bg-emerald-950 text-emerald-400 px-2.5 py-0.5 rounded-full border border-emerald-800">0 Pending</span>
+                    </div>
+
+                    <form onsubmit="addPlannerTask(event)" class="flex gap-2">
+                        <input type="text" id="taskInput" placeholder="Add assignment (+15 Dubbinces on completion)..." required class="flex-1 bg-slate-950 border border-slate-700 text-xs text-white rounded-xl px-3.5 py-2.5 focus:outline-none focus:ring-2 focus:ring-emerald-500">
+                        <select id="taskPriority" class="bg-slate-950 border border-slate-700 text-xs text-slate-300 rounded-xl px-2 py-2.5 focus:outline-none">
+                            <option value="normal">Normal</option>
+                            <option value="urgent">🔴 Urgent</option>
+                        </select>
+                        <button type="submit" class="bg-emerald-600 hover:bg-emerald-500 text-white px-3 py-2.5 rounded-xl text-xs font-bold transition-all">Add</button>
+                    </form>
+
+                    <div id="taskList" class="space-y-2 max-h-[300px] overflow-y-auto pr-1">
+                        <!-- Tasks -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 3: POMODORO TIMER -->
+            <section id="tab-content-timer" class="hidden space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-6 text-center space-y-5">
+                    <div class="inline-flex items-center gap-2 bg-slate-800 px-3 py-1 rounded-full text-xs text-slate-300">
+                        <i class="fa-solid fa-brain text-emerald-400"></i>
+                        <span id="timerModeLabel">Focus Session (25 min)</span>
+                    </div>
+
+                    <div class="relative w-40 h-40 mx-auto flex items-center justify-center rounded-full border-4 border-emerald-500/30 bg-slate-950/80 shadow-inner">
+                        <span id="timerDisplay" class="text-4xl font-extrabold text-white tracking-wider">25:00</span>
+                    </div>
+
+                    <div class="flex items-center justify-center gap-3">
+                        <button id="startTimerBtn" onclick="toggleTimer()" class="bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all active:scale-95">
+                            Start Focus
+                        </button>
+                        <button onclick="resetTimer()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 px-4 py-2.5 rounded-xl font-medium text-sm transition-all">
+                            Reset
+                        </button>
+                    </div>
+
+                    <div class="flex justify-center gap-2 pt-2 border-t border-slate-800/80 text-xs">
+                        <button onclick="setTimerPreset(25, 'Focus Session')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">25m Work</button>
+                        <button onclick="setTimerPreset(5, 'Short Break')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">5m Break</button>
+                        <button onclick="setTimerPreset(15, 'Long Break')" class="px-3 py-1 bg-slate-800 hover:bg-slate-700 rounded-lg text-slate-300">15m Break</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 4: ADVANCED UNLOCKABLE STUDY TOOLS -->
+            <section id="tab-content-tools" class="hidden space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-4">
+                    <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                        <i class="fa-solid fa-cubes text-emerald-400"></i> Study Tools Suite
+                    </h3>
+
+                    <!-- Tool 1: Interactive Flashcards (Requires 50 Dubbinces) -->
+                    <div id="tool-flashcards" class="relative rounded-2xl bg-slate-950 border border-slate-800 p-4 space-y-3">
+                        <div class="flex justify-between items-center">
+                            <h4 class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-layer-group"></i> Biology Flashcard Deck</h4>
+                            <span class="text-[10px] text-slate-400">Interactive Practice</span>
+                        </div>
+                        <div id="flashcardArea" class="bg-slate-900 rounded-xl p-4 text-center cursor-pointer min-h-[100px] flex items-center justify-center border border-slate-800" onclick="flipFlashcard()">
+                            <p id="cardText" class="text-xs text-slate-200 font-medium">Click to reveal answer</p>
+                        </div>
+                        <div class="flex justify-between items-center text-xs">
+                            <button onclick="prevCard()" class="px-3 py-1 bg-slate-800 rounded-lg text-slate-300">Prev</button>
+                            <span id="cardProgress" class="text-[11px] text-slate-400">Card 1 / 3</span>
+                            <button onclick="nextCard()" class="px-3 py-1 bg-emerald-600 rounded-lg text-white font-bold">Next</button>
+                        </div>
+                        <!-- Lock Overlay -->
+                        <div id="lock-flashcards" class="absolute inset-0 bg-slate-950/95 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center p-4 text-center space-y-2 border border-slate-800">
+                            <i class="fa-solid fa-lock text-amber-400 text-xl"></i>
+                            <p class="font-bold text-xs text-white">Biology Flashcards Deck</p>
+                            <p class="text-[11px] text-slate-400">Master cell structures & photosynthesis</p>
+                            <button onclick="unlockTool('flashcards', 50)" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl font-bold text-xs transition-transform active:scale-95 flex items-center gap-1.5">
+                                <i class="fa-solid fa-coins"></i> Unlock for 50 Dubbinces
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Tool 2: Math Formula Vault (Requires 100 Dubbinces) -->
+                    <div id="tool-formulas" class="relative rounded-2xl bg-slate-950 border border-slate-800 p-4 space-y-2">
+                        <h4 class="font-bold text-xs text-emerald-400"><i class="fa-solid fa-calculator"></i> Math & Science Formula Vault</h4>
+                        <div class="space-y-1.5 text-xs text-slate-300">
+                            <div class="p-2 bg-slate-900 rounded-lg border border-slate-800"><strong>Quadratic:</strong> x = (-b ± √(b² - 4ac)) / 2a</div>
+                            <div class="p-2 bg-slate-900 rounded-lg border border-slate-800"><strong>Pythagorean:</strong> a² + b² = c²</div>
+                            <div class="p-2 bg-slate-900 rounded-lg border border-slate-800"><strong>Photosynthesis:</strong> 6CO₂ + 6H₂O + Light ➔ C₆H₁₂O₆ + 6O₂</div>
+                        </div>
+                        <!-- Lock Overlay -->
+                        <div id="lock-formulas" class="absolute inset-0 bg-slate-950/95 backdrop-blur-sm rounded-2xl flex flex-col items-center justify-center p-4 text-center space-y-2 border border-slate-800">
+                            <i class="fa-solid fa-lock text-amber-400 text-xl"></i>
+                            <p class="font-bold text-xs text-white">Math & Science Formula Vault</p>
+                            <button onclick="unlockTool('formulas', 100)" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-4 py-1.5 rounded-xl font-bold text-xs transition-transform active:scale-95 flex items-center gap-1.5">
+                                <i class="fa-solid fa-coins"></i> Unlock for 100 Dubbinces
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Quick Cheat Sheet Notes -->
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i class="fa-solid fa-file-pen text-emerald-400"></i> My Quick Cheat Sheet
+                        </h3>
+                        <span class="text-[10px] text-slate-400">Auto-saved</span>
+                    </div>
+
+                    <textarea id="quickNotesArea" oninput="saveQuickNotes()" placeholder="Type important formulas, study facts, or exam reminders here..." class="w-full h-32 bg-slate-950 border border-slate-800 rounded-2xl p-3.5 text-xs text-slate-200 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed resize-none"></textarea>
+                    
+                    <div class="flex justify-between items-center text-[11px] text-slate-400">
+                        <span id="notesSaveStatus">Saved automatically</span>
+                        <button onclick="clearQuickNotes()" class="text-rose-400 hover:text-rose-300">Clear Notes</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TAB 5: DUBBINCES SHOP & BACKGROUND CUSTOMIZER -->
+            <section id="tab-content-shop" class="hidden space-y-4">
+                <div class="bg-slate-900 border border-slate-800 rounded-3xl p-4 space-y-4">
+                    <div class="flex justify-between items-center">
+                        <h3 class="font-bold text-sm text-white flex items-center gap-2">
+                            <i class="fa-solid fa-palette text-amber-400"></i> Background & Theme Shop
+                        </h3>
+                        <div class="text-xs text-amber-300 font-bold bg-amber-500/10 px-2.5 py-1 rounded-lg border border-amber-500/30">
+                            <span id="shopDubbincesDisplay">0</span> Dubbinces
+                        </div>
+                    </div>
+
+                    <!-- Themes list -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-3" id="themeShopContainer">
+                        <!-- Theme items rendered by JS -->
+                    </div>
+                </div>
+            </section>
+
+        </main>
+
+        <!-- Footer / Ownership & Credit -->
+        <footer class="mt-auto px-4 py-4 text-center border-t border-slate-800/80 text-xs text-slate-500 space-y-1">
+            <p class="font-semibold text-slate-400">Alec Wilson's Ultimate Study Helper &copy; <span id="yearSpan"></span></p>
+            <p class="text-[11px]">Designed to help students tackle stress, log logistics, and excel academically.</p>
+        </footer>
+
+    </div>
+
+    <!-- JavaScript Application Logic -->
+    <script>
+        document.getElementById('yearSpan').innerText = new Date().getFullYear();
+
+        // Game & System State
+        let dubbinces = parseInt(localStorage.getItem('alec_dubbinces') || '30');
+        let unlockedTools = JSON.parse(localStorage.getItem('alec_unlocked_tools') || '[]');
+        let unlockedThemes = JSON.parse(localStorage.getItem('alec_unlocked_themes') || '["midnight"]');
+        let activeTheme = localStorage.getItem('alec_active_theme') || 'midnight';
+
+        let quests = [
+            { id: 'q1', text: 'Ask 1 study question to AI (+10 Dubbinces)', completed: false, reward: 10 },
+            { id: 'q2', text: 'Complete 1 homework task (+15 Dubbinces)', completed: false, reward: 15 },
+            { id: 'q3', text: 'Finish a 25m Pomodoro focus session (+25 Dubbinces)', completed: false, reward: 25 }
+        ];
+
+        let cards = [
+            { q: 'What is the function of Mitochondria?', a: 'Powerhouse of the cell — produces ATP energy through cellular respiration.' },
+            { q: 'What is the formula for Photosynthesis?', a: '6CO₂ + 6H₂O + Light energy ➔ C₆H₁₂O₆ + 6O₂' },
+            { q: 'What is Chlorophyll?', a: 'The green pigment in chloroplasts that absorbs light energy for photosynthesis.' }
+        ];
+        let cardIdx = 0;
+        let cardIsFlipped = false;
+
+        let tasks = JSON.parse(localStorage.getItem('alec_study_tasks') || '[]');
+        let timerInterval = null;
+        let timerSeconds = 25 * 60;
+        let timerIsRunning = false;
+
+        // Init setup
+        window.onload = function() {
+            updateDubbincesDisplay();
+            renderQuests();
+            renderTasks();
+            loadQuickNotes();
+            setupThemeToggle();
+            applyTheme(activeTheme);
+            renderThemeShop();
+            updateLockStatus();
+            renderFlashcard();
+        };
+
+        // Dubbinces Manager
+        function addDubbinces(amount) {
+            dubbinces += amount;
+            localStorage.setItem('alec_dubbinces', dubbinces);
+            updateDubbincesDisplay();
+        }
+
+        function updateDubbincesDisplay() {
+            document.getElementById('dubbincesDisplay').innerText = dubbinces;
+            document.getElementById('shopDubbincesDisplay').innerText = dubbinces;
+        }
+
+        // Quests
+        function renderQuests() {
+            const container = document.getElementById('questList');
+            container.innerHTML = quests.map(q => `
+                <div class="flex items-center justify-between bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs">
+                    <span class="${q.completed ? 'line-through text-slate-500' : 'text-slate-300'} font-medium">${q.text}</span>
+                    ${q.completed 
+                        ? `<span class="text-emerald-400 font-bold"><i class="fa-solid fa-circle-check"></i> Done</span>`
+                        : `<button onclick="claimQuest('${q.id}')" class="bg-amber-500 hover:bg-amber-400 text-slate-950 px-2.5 py-1 rounded-lg font-bold text-[11px]">Claim</button>`
+                    }
+                </div>
+            `).join('');
+        }
+
+        function claimQuest(id) {
+            const quest = quests.find(q => q.id === id);
+            if (quest && !quest.completed) {
+                quest.completed = true;
+                addDubbinces(quest.reward);
+                renderQuests();
+            }
+        }
+
+        // Unlockable Tools
+        function unlockTool(toolId, cost) {
+            if (dubbinces >= cost) {
+                addDubbinces(-cost);
+                unlockedTools.push(toolId);
+                localStorage.setItem('alec_unlocked_tools', JSON.stringify(unlockedTools));
+                updateLockStatus();
+            } else {
+                alert(`You need ${cost - dubbinces} more Dubbinces to unlock this study tool!`);
+            }
+        }
+
+        function updateLockStatus() {
+            if (unlockedTools.includes('flashcards')) {
+                document.getElementById('lock-flashcards').classList.add('hidden');
+            }
+            if (unlockedTools.includes('formulas')) {
+                document.getElementById('lock-formulas').classList.add('hidden');
+            }
+        }
+
+        // Flashcards Logic
+        function renderFlashcard() {
+            const card = cards[cardIdx];
+            const textEl = document.getElementById('cardText');
+            textEl.innerText = cardIsFlipped ? card.a : card.q;
+            document.getElementById('cardProgress').innerText = `Card ${cardIdx + 1} / ${cards.length}`;
+        }
+
+        function flipFlashcard() {
+            cardIsFlipped = !cardIsFlipped;
+            renderFlashcard();
+        }
+
+        function nextCard() {
+            cardIdx = (cardIdx + 1) % cards.length;
+            cardIsFlipped = false;
+            renderFlashcard();
+        }
+
+        function prevCard() {
+            cardIdx = (cardIdx - 1 + cards.length) % cards.length;
+            cardIsFlipped = false;
+            renderFlashcard();
+        }
+
+        // Themes Shop
+        const themes = [
+            { id: 'midnight', name: 'Midnight Dark', price: 0, bg: 'bg-slate-950', border: 'border-slate-800' },
+            { id: 'cyberpunk', name: 'Cyberpunk Neon', price: 40, bg: 'bg-indigo-950', border: 'border-pink-500/40' },
+            { id: 'lofi', name: 'Cozy Lofi Sunset', price: 60, bg: 'bg-amber-950/80', border: 'border-amber-600/40' },
+            { id: 'matrix', name: 'Matrix Green', price: 80, bg: 'bg-emerald-950', border: 'border-emerald-500/50' }
+        ];
+
+        function renderThemeShop() {
+            const container = document.getElementById('themeShopContainer');
+            container.innerHTML = themes.map(t => {
+                const isUnlocked = unlockedThemes.includes(t.id);
+                const isActive = activeTheme === t.id;
+                return `
+                    <div class="p-3 rounded-2xl border ${t.border} ${t.bg} flex flex-col justify-between space-y-3">
+                        <div>
+                            <p class="font-bold text-xs text-white">${t.name}</p>
+                            <p class="text-[10px] text-slate-400">${t.price === 0 ? 'Default Theme' : `${t.price} Dubbinces`}</p>
+                        </div>
+                        ${isActive 
+                            ? `<span class="bg-emerald-500/20 text-emerald-400 text-[10px] font-bold px-2 py-1 rounded-lg text-center border border-emerald-500/30">Active Theme</span>`
+                            : isUnlocked 
+                                ? `<button onclick="applyTheme('${t.id}')" class="bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs py-1 px-2 rounded-lg font-bold">Apply</button>`
+                                : `<button onclick="buyTheme('${t.id}', ${t.price})" class="bg-amber-500 hover:bg-amber-400 text-slate-950 text-xs py-1 px-2 rounded-lg font-bold">Buy Theme</button>`
+                        }
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function buyTheme(themeId, price) {
+            if (dubbinces >= price) {
+                addDubbinces(-price);
+                unlockedThemes.push(themeId);
+                localStorage.setItem('alec_unlocked_themes', JSON.stringify(unlockedThemes));
+                applyTheme(themeId);
+            } else {
+                alert(`You need ${price - dubbinces} more Dubbinces to buy this background!`);
+            }
+        }
+
+        function applyTheme(themeId) {
+            activeTheme = themeId;
+            localStorage.setItem('alec_active_theme', themeId);
+            const app = document.getElementById('app');
+            app.className = "min-h-screen flex flex-col max-w-md mx-auto sm:max-w-xl md:max-w-2xl shadow-2xl relative pb-24 border-x border-slate-800 transition-colors duration-300 ";
+
+            if (themeId === 'cyberpunk') app.classList.add('bg-indigo-950');
+            else if (themeId === 'lofi') app.classList.add('bg-amber-950');
+            else if (themeId === 'matrix') app.classList.add('bg-emerald-950');
+            else app.classList.add('bg-slate-950');
+
+            renderThemeShop();
+        }
+
+        // Tab Switching
+        function switchTab(tabKey) {
+            const tabs = ['qa', 'planner', 'timer', 'tools', 'shop'];
+            tabs.forEach(t => {
+                const navBtn = document.getElementById(`nav-${t}`);
+                const content = document.getElementById(`tab-content-${t}`);
+                if (t === tabKey) {
+                    navBtn.className = "py-2 px-1 rounded-xl text-xs font-bold transition-all bg-emerald-600 text-white shadow-md flex flex-col items-center gap-1";
+                    content.classList.remove('hidden');
+                } else {
+                    navBtn.className = "py-2 px-1 rounded-xl text-xs font-medium text-slate-400 hover:text-white transition-all flex flex-col items-center gap-1";
+                    content.classList.add('hidden');
+                }
+            });
+        }
+
+        // Theme Toggle
+        function setupThemeToggle() {
+            const themeBtn = document.getElementById('themeToggleBtn');
+            const themeIcon = document.getElementById('themeIcon');
+            themeBtn.onclick = () => {
+                document.documentElement.classList.toggle('light');
+                const isLight = document.documentElement.classList.contains('light');
+                if (isLight) {
+                    document.body.classList.replace('bg-slate-900', 'bg-slate-100');
+                    document.body.classList.replace('text-slate-100', 'text-slate-800');
+                    themeIcon.className = 'fa-solid fa-moon text-slate-700';
+                } else {
+                    document.body.classList.replace('bg-slate-100', 'bg-slate-900');
+                    document.body.classList.replace('text-slate-800', 'text-slate-100');
+                    themeIcon.className = 'fa-solid fa-sun text-amber-400';
+                }
+            };
+        }
+
+        // Gemini AI Q&A Integration
+        async function handleQuestionSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('qaInput');
+            const question = input.value.trim();
+            if (!question) return;
+
+            appendChatMessage('user', question);
+            input.value = '';
+
+            const loadingId = appendChatMessage('system', 'Thinking... answered in a heartbeat...');
+
+            try {
+                const systemPrompt = "You are Alec Wilson's Ultimate AI Study Helper for junior high and high school students. Provide helpful, encouraging, concise, and easy-to-understand study, homework, or stress management answers. Keep responses well-structured and encouraging.";
+                const apiKey = "";
+                const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+                const payload = {
+                    contents: [{ parts: [{ text: question }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] }
+                };
+
+                const response = await fetch(apiUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(payload)
+                });
+
+                const data = await response.json();
+                const replyText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't fetch an answer right now. Please try again!";
+
+                removeChatMessage(loadingId);
+                appendChatMessage('assistant', replyText);
+
+                // Reward student with Dubbinces for asking!
+                addDubbinces(10);
+            } catch (err) {
+                removeChatMessage(loadingId);
+                appendChatMessage('assistant', "Network issue or API limit reached. Please try asking again in a moment!");
+            }
+        }
+
+        function useQuickPrompt(promptText) {
+            document.getElementById('qaInput').value = promptText;
+            document.getElementById('qaForm').dispatchEvent(new Event('submit'));
+        }
+
+        function appendChatMessage(role, text) {
+            const container = document.getElementById('chatMessages');
+            const msgId = 'msg-' + Date.now() + '-' + Math.random().toString(36).substr(2, 4);
+            const msgDiv = document.createElement('div');
+
+            if (role === 'user') {
+                msgDiv.className = "bg-emerald-600 text-white p-3 rounded-2xl rounded-tr-none ml-auto max-w-[85%] text-xs leading-relaxed shadow-sm";
+                msgDiv.innerText = text;
+            } else if (role === 'system') {
+                msgDiv.id = msgId;
+                msgDiv.className = "bg-slate-800 text-slate-400 italic p-3 rounded-2xl max-w-[85%] text-xs flex items-center gap-2";
+                msgDiv.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin text-emerald-400"></i> <span>${text}</span>`;
+            } else {
+                msgDiv.className = "bg-slate-800/90 text-slate-200 p-3.5 rounded-2xl rounded-tl-none max-w-[90%] text-xs leading-relaxed space-y-1.5 border border-slate-700/60";
+                msgDiv.innerHTML = `<p class="font-bold text-emerald-400 text-[11px]">Alec's AI Helper (+10 Dubbinces!):</p><div>${formatText(text)}</div>`;
+            }
+
+            container.appendChild(msgDiv);
+            container.scrollTop = container.scrollHeight;
+            return msgId;
+        }
+
+        function removeChatMessage(id) {
+            const el = document.getElementById(id);
+            if (el) el.remove();
+        }
+
+        function formatText(txt) {
+            return txt.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+        }
+
+        // Planner Task Manager
+        function addPlannerTask(e) {
+            e.preventDefault();
+            const input = document.getElementById('taskInput');
+            const priority = document.getElementById('taskPriority').value;
+            const text = input.value.trim();
+
+            if (!text) return;
+            tasks.push({ id: Date.now(), text, priority, completed: false });
+            saveTasks();
+            renderTasks();
+            input.value = '';
+        }
+
+        function toggleTask(id) {
+            tasks = tasks.map(t => {
+                if (t.id === id) {
+                    const nextState = !t.completed;
+                    if (nextState) addDubbinces(15);
+                    return { ...t, completed: nextState };
+                }
+                return t;
+            });
+            saveTasks();
+            renderTasks();
+        }
+
+        function deleteTask(id) {
+            tasks = tasks.filter(t => t.id !== id);
+            saveTasks();
+            renderTasks();
+        }
+
+        function saveTasks() {
+            localStorage.setItem('alec_study_tasks', JSON.stringify(tasks));
+        }
+
+        function renderTasks() {
+            const container = document.getElementById('taskList');
+            const pendingCount = tasks.filter(t => !t.completed).length;
+            document.getElementById('plannerCounter').innerText = `${pendingCount} Pending`;
+
+            if (tasks.length === 0) {
+                container.innerHTML = `<p class="text-xs text-slate-500 text-center py-4">No tasks added yet. Add homework or test reminders above!</p>`;
+                return;
+            }
+
+            container.innerHTML = tasks.map(t => `
+                <div class="flex items-center justify-between bg-slate-950 p-2.5 rounded-xl border border-slate-800 text-xs">
+                    <div class="flex items-center gap-2.5 flex-1 min-w-0 pr-2">
+                        <button onclick="toggleTask(${t.id})" class="w-5 h-5 rounded-md border ${t.completed ? 'bg-emerald-600 border-emerald-500 text-white' : 'border-slate-700'} flex items-center justify-center shrink-0">
+                            ${t.completed ? '<i class="fa-solid fa-check text-[10px]"></i>' : ''}
+                        </button>
+                        <span class="${t.completed ? 'line-through text-slate-500' : 'text-slate-200'} truncate">
+                            ${t.priority === 'urgent' ? '🔴 ' : ''}${t.text}
+                        </span>
+                    </div>
+                    <button onclick="deleteTask(${t.id})" class="text-slate-500 hover:text-rose-400 shrink-0 px-1">
+                        <i class="fa-solid fa-trash text-xs"></i>
+                    </button>
+                </div>
+            `).join('');
+        }
+
+        // Pomodoro Timer
+        function updateTimerDisplay() {
+            const mins = Math.floor(timerSeconds / 60).toString().padStart(2, '0');
+            const secs = (timerSeconds % 60).toString().padStart(2, '0');
+            document.getElementById('timerDisplay').innerText = `${mins}:${secs}`;
+        }
+
+        function toggleTimer() {
+            const btn = document.getElementById('startTimerBtn');
+            if (timerIsRunning) {
+                clearInterval(timerInterval);
+                timerIsRunning = false;
+                btn.innerText = 'Resume';
+                btn.className = 'bg-emerald-600 hover:bg-emerald-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg shadow-emerald-600/20 transition-all active:scale-95';
+            } else {
+                timerIsRunning = true;
+                btn.innerText = 'Pause';
+                btn.className = 'bg-amber-600 hover:bg-amber-500 text-white px-6 py-2.5 rounded-xl font-bold text-sm shadow-lg transition-all active:scale-95';
+                timerInterval = setInterval(() => {
+                    if (timerSeconds > 0) {
+                        timerSeconds--;
+                        updateTimerDisplay();
+                    } else {
+                        clearInterval(timerInterval);
+                        timerIsRunning = false;
+                        btn.innerText = 'Start Focus';
+                        addDubbinces(25);
+                        alert('Time is up! You earned 25 Dubbinces! Take a break or start your next session.');
+                    }
+                }, 1000);
+            }
+        }
+
+        function resetTimer() {
+            clearInterval(timerInterval);
+            timerIsRunning = false;
+            timerSeconds = 25 * 60;
+            document.getElementById('timerModeLabel').innerText = 'Focus Session (25 min)';
+            document.getElementById('startTimerBtn').innerText = 'Start Focus';
+            updateTimerDisplay();
+        }
+
+        function setTimerPreset(mins, label) {
+            clearInterval(timerInterval);
+            timerIsRunning = false;
+            timerSeconds = mins * 60;
+            document.getElementById('timerModeLabel').innerText = `${label} (${mins} min)`;
+            document.getElementById('startTimerBtn').innerText = 'Start';
+            updateTimerDisplay();
+        }
+
+        // Quick Notes
+        function saveQuickNotes() {
+            const text = document.getElementById('quickNotesArea').value;
+            localStorage.setItem('alec_study_notes', text);
+            document.getElementById('notesSaveStatus').innerText = 'Saved';
+            setTimeout(() => {
+                document.getElementById('notesSaveStatus').innerText = 'Auto-saved to device';
+            }, 1500);
+        }
+
+        function loadQuickNotes() {
+            const saved = localStorage.getItem('alec_study_notes');
+            if (saved !== null) {
+                document.getElementById('quickNotesArea').value = saved;
+            }
+        }
+
+        function clearQuickNotes() {
+            if (confirm('Clear all quick cheat sheet notes?')) {
+                document.getElementById('quickNotesArea').value = '';
+                localStorage.removeItem('alec_study_notes');
+            }
+        }
+    </script>
+</body>
+</html>
